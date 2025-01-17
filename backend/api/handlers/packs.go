@@ -19,6 +19,11 @@ func UpdatePackSizesHandler(cfg *config.Config) gin.HandlerFunc {
 			return
 		}
 
+		if len(req.PackSizes) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Pack sizes cannot be empty."})
+			return
+		}
+
 		cfg.PackSizes = req.PackSizes
 		c.JSON(http.StatusOK, gin.H{"message": "Pack sizes updated successfully"})
 	}

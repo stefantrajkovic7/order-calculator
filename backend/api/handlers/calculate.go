@@ -9,7 +9,7 @@ import (
 )
 
 type CalculateRequest struct {
-	Order int `json:"order" binding:"required"`
+	Order int `json:"order" binding:"required,gte=0"`
 }
 
 type CalculateResponse struct {
@@ -21,6 +21,11 @@ func CalculateHandler(cfg *config.Config) gin.HandlerFunc {
 		var req CalculateRequest
 		if err := c.ShouldBindJSON(&req); err != nil {
 			c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+			return
+		}
+
+		if len(cfg.PackSizes) == 0 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "No pack sizes available."})
 			return
 		}
 

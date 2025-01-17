@@ -91,3 +91,41 @@ func TestUpdatePackSizesEndpoint(t *testing.T) {
 		t.Errorf("Expected pack sizes %v but got %v", expectedPackSizes, cfg.PackSizes)
 	}
 }
+
+func TestInvalidOrder(t *testing.T) {
+	cfg := &config.Config{PackSizes: []int{250, 500, 1000}}
+	r := gin.Default()
+	r.POST("/calculate", handlers.CalculateHandler(cfg))
+
+	payload := map[string]int{"order": -5}
+	body, _ := json.Marshal(payload)
+
+	req := httptest.NewRequest("POST", "/calculate", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("Expected status %d but got %d", http.StatusBadRequest, w.Code)
+	}
+}
+
+func TestEmptyPackSizes(t *testing.T) {
+	cfg := &config.Config{PackSizes: []int{}}
+	r := gin.Default()
+	r.POST("/calculate", handlers.CalculateHandler(cfg))
+
+	payload := map[string]int{"order": 10}
+	body, _ := json.Marshal(payload)
+
+	req := httptest.NewRequest("POST", "/calculate", bytes.NewBuffer(body))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+	r.ServeHTTP(w, req)
+
+	if w.Code != http.StatusBadRequest {
+		t.Fatalf("Expected status %d but got %d", http.StatusBadRequest, w.Code)
+	}
+}
