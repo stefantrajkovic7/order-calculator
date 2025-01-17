@@ -1,0 +1,160 @@
+{
+    "schemes": [
+        "http"
+    ],
+    "swagger": "2.0",
+    "info": {
+        "description": "API for calculating and managing pack sizes.",
+        "title": "Pack Calculator API",
+        "contact": {},
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/",
+    "paths": {
+        "/calculate": {
+            "post": {
+                "description": "Calculate the optimal combination of pack sizes for a given order",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Calculate"
+                ],
+                "summary": "Calculate optimal pack sizes",
+                "parameters": [
+                    {
+                        "description": "Order input",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.CalculateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.CalculateResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/packs": {
+            "post": {
+                "description": "Update the available pack sizes configuration",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Packs"
+                ],
+                "summary": "Update pack sizes",
+                "parameters": [
+                    {
+                        "description": "Pack sizes input",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/handlers.UpdatePackSizesRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/types.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/types.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "handlers.CalculateRequest": {
+            "description": "Input data for calculation",
+            "type": "object",
+            "required": [
+                "order"
+            ],
+            "properties": {
+                "order": {
+                    "description": "Number of items to be packed\nRequired: true\nminimum: 0",
+                    "type": "integer",
+                    "minimum": 0,
+                    "example": 123
+                }
+            }
+        },
+        "handlers.CalculateResponse": {
+            "description": "Map of pack sizes to their quantities",
+            "type": "object",
+            "properties": {
+                "packs": {
+                    "description": "Map of pack sizes to their quantities\nExample: {\"250\":1,\"500\":2}",
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "handlers.UpdatePackSizesRequest": {
+            "description": "Input data for updating pack sizes",
+            "type": "object",
+            "required": [
+                "pack_sizes"
+            ],
+            "properties": {
+                "pack_sizes": {
+                    "description": "Array of available pack sizes\nRequired: true\nExample: [250,500,1000,2000,5000]",
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
+        "types.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "error message"
+                }
+            }
+        },
+        "types.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Operation completed successfully"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,115 @@
+basePath: /
+definitions:
+  handlers.CalculateRequest:
+    description: Input data for calculation
+    properties:
+      order:
+        description: |-
+          Number of items to be packed
+          Required: true
+          minimum: 0
+        example: 123
+        minimum: 0
+        type: integer
+    required:
+    - order
+    type: object
+  handlers.CalculateResponse:
+    description: Map of pack sizes to their quantities
+    properties:
+      packs:
+        additionalProperties:
+          type: integer
+        description: |-
+          Map of pack sizes to their quantities
+          Example: {"250":1,"500":2}
+        type: object
+    type: object
+  handlers.UpdatePackSizesRequest:
+    description: Input data for updating pack sizes
+    properties:
+      pack_sizes:
+        description: |-
+          Array of available pack sizes
+          Required: true
+          Example: [250,500,1000,2000,5000]
+        items:
+          type: integer
+        type: array
+    required:
+    - pack_sizes
+    type: object
+  types.ErrorResponse:
+    properties:
+      error:
+        example: error message
+        type: string
+    type: object
+  types.SuccessResponse:
+    properties:
+      message:
+        example: Operation completed successfully
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: API for calculating and managing pack sizes.
+  title: Pack Calculator API
+  version: "1.0"
+paths:
+  /calculate:
+    post:
+      consumes:
+      - application/json
+      description: Calculate the optimal combination of pack sizes for a given order
+      parameters:
+      - description: Order input
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.CalculateRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/handlers.CalculateResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.ErrorResponse'
+      summary: Calculate optimal pack sizes
+      tags:
+      - Calculate
+  /packs:
+    post:
+      consumes:
+      - application/json
+      description: Update the available pack sizes configuration
+      parameters:
+      - description: Pack sizes input
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handlers.UpdatePackSizesRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/types.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/types.ErrorResponse'
+      summary: Update pack sizes
+      tags:
+      - Packs
+schemes:
+- http
+swagger: "2.0"
