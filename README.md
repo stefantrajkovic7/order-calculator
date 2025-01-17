@@ -88,7 +88,7 @@ docker-compose up frontend
    ```bash
    go run cmd/server/main.go
    ```
-4. Swagger documentation will be available at [http://localhost:8080/docs](http://localhost:8080/docs).
+4. Swagger documentation will be available at [http://localhost:8080/docs/index.html](http://localhost:8080/docs/index.html).
 
 #### Frontend
 1. Navigate to the `frontend` directory:
