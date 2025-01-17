@@ -5,6 +5,7 @@ import (
 	"backend/internal/config"
 	"log"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,6 +18,9 @@ func main() {
 
 	// Initialize Gin router
 	r := gin.Default()
+
+	// Enable CORS
+	r.Use(cors.Default())
 
 	// Define routes
 	r.POST("/calculate", handlers.CalculateHandler(config))
